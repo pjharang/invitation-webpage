@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>초대합니다</title>
+  <meta name="description" content="소중한 분들을 초대합니다.">
+  <meta property="og:title" content="초대합니다">
+  <meta property="og:description" content="소중한 분들을 초대합니다.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+
+    <!-- 커버 -->
+    <header class="cover" id="cover">
+      <p class="cover__label">INVITATION</p>
+      <h1 class="cover__title" data-bind="eventName">행사 이름</h1>
+      <p class="cover__date" data-bind="dateText">날짜</p>
+    </header>
+
+    <!-- 인사말 -->
+    <section class="section section--photo" id="greeting">
+      <h2 class="section__title">초대합니다</h2>
+      <p class="greeting" data-bind="greeting">인사말</p>
+    </section>
+
+    <!-- D-Day -->
+    <section class="section section--tint" id="dday">
+      <h2 class="section__title">D-Day</h2>
+      <p class="dday__summary" id="dday-summary" aria-live="off">D-0</p>
+      <div class="countdown" id="countdown" aria-live="off">
+        <div class="countdown__item"><span class="countdown__num" id="cd-days">00</span><span class="countdown__unit">일</span></div>
+        <div class="countdown__item"><span class="countdown__num" id="cd-hours">00</span><span class="countdown__unit">시간</span></div>
+        <div class="countdown__item"><span class="countdown__num" id="cd-minutes">00</span><span class="countdown__unit">분</span></div>
+        <div class="countdown__item"><span class="countdown__num" id="cd-seconds">00</span><span class="countdown__unit">초</span></div>
+      </div>
+      <p class="dday__message" id="dday-message"></p>
+    </section>
+
+    <!-- 일시·장소 -->
+    <section class="section" id="location">
+      <h2 class="section__title">일시 및 장소</h2>
+      <p class="info"><strong data-bind="dateText">날짜</strong><br><span data-bind="timeText">시간</span></p>
+      <p class="info"><strong data-bind="venueName">장소명</strong><br><span data-bind="address">주소</span></p>
+
+      <div class="map">
+        <iframe id="map-frame" class="map__frame" title="행사 장소 지도" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+
+      <div class="actions">
+        <a class="btn" id="link-naver" target="_blank" rel="noopener">네이버지도</a>
+        <a class="btn" id="link-kakao" target="_blank" rel="noopener">카카오맵</a>
+        <a class="btn" id="link-google" target="_blank" rel="noopener">구글지도</a>
+        <button class="btn btn--ghost" id="copy-address" type="button">주소 복사</button>
+      </div>
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- 연락처 -->
+    <section class="section section--tint" id="contact">
+      <h2 class="section__title">연락처</h2>
+      <div class="actions">
+        <a class="btn" id="link-tel">전화하기</a>
+        <a class="btn btn--ghost" id="link-sms">문자 보내기</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p data-bind="footer">감사합니다.</p>
+    </footer>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
