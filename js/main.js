@@ -13,6 +13,7 @@ const CONFIG = {
 
 const EVENT_TIME = new Date(CONFIG.eventDate).getTime();
 const KST = 'Asia/Seoul';
+const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function pad(n) {
   return String(n).padStart(2, '0');
@@ -32,8 +33,12 @@ function initContent() {
   const timeText = new Intl.DateTimeFormat('ko-KR', {
     timeZone: KST, hour: 'numeric', minute: '2-digit', hour12: true,
   }).format(date);
+  // 예: 2027. 03. 20
+  const dateNum = new Intl.DateTimeFormat('en-CA', { timeZone: KST })
+    .format(date).replace(/-/g, '. ');
 
   const values = {
+    dateNum,
     eventName: CONFIG.eventName,
     greeting: CONFIG.greeting,
     venueName: CONFIG.venueName,
@@ -82,7 +87,17 @@ function initCountdown() {
     els.days.textContent = pad(Math.floor(totalSec / 86400));
     els.hours.textContent = pad(Math.floor((totalSec % 86400) / 3600));
     els.minutes.textContent = pad(Math.floor((totalSec % 3600) / 60));
-    els.seconds.textContent = pad(totalSec % 60);
+    const sec = pad(totalSec % 60);
+    if (sec !== els.seconds.textContent) {
+      els.seconds.textContent = sec;
+      // 초가 바뀔 때 살짝 떨어지는 효과
+      if (!REDUCE_MOTION && els.seconds.animate) {
+        els.seconds.animate(
+          [{ opacity: 0.2, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 450, easing: 'ease-out' },
+        );
+      }
+    }
     const dayGap = getCalendarDays();
     els.summary.textContent = dayGap === 0 ? 'D-Day' : `D-${dayGap}`;
     els.message.textContent = '행사까지 남은 시간';
@@ -126,7 +141,44 @@ function initContact() {
   document.getElementById('link-sms').href = `sms:${num}`;
 }
 
+// 화면 위에서 꽃잎이 흩날리는 효과
+function initPetals() {
+  if (REDUCE_MOTION) return;
+  const box = document.getElementById('petals');
+  const count = 16;
+  for (let i = 0; i < count; i += 1) {
+    const petal = document.createElement('span');
+    petal.className = 'petal';
+    petal.style.setProperty('--size', `${8 + Math.random() * 10}px`);
+    petal.style.setProperty('--x', `${Math.random() * 100}%`);
+    petal.style.setProperty('--drift', `${(Math.random() - 0.5) * 140}px`);
+    petal.style.setProperty('--dur', `${9 + Math.random() * 8}s`);
+    petal.style.setProperty('--delay', `${-Math.random() * 15}s`); // 처음부터 화면 곳곳에 보이도록
+    box.appendChild(petal);
+  }
+}
+
+// 섹션이 화면에 들어올 때 서서히 나타나는 효과
+function initReveal() {
+  const items = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach((el) => observer.observe(el));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initPetals();
+  initReveal();
   initContent();
   initCountdown();
   initMap();

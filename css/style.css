@@ -3,8 +3,12 @@
   --color-tint: #f6efe6;
   --color-text: #3a3330;
   --color-sub: #7a6f68;
-  --color-accent: #b08968;
-  --color-accent-dark: #8c6a4c;
+  --gold: #b8925a;
+  --gold-dark: #7d5a2c;
+  --gold-light: #e3c88f;
+  --dark-bg: #2b2623;
+  --dark-text: #efe6da;
+  --font-display: 'Cormorant Garamond', 'Noto Serif KR', serif;
   --font-serif: 'Noto Serif KR', serif;
   --font-sans: 'Noto Sans KR', system-ui, -apple-system, sans-serif;
   --radius: 12px;
@@ -25,46 +29,151 @@ body {
 }
 
 .page {
+  position: relative;
   max-width: 480px;
   margin: 0 auto;
   background: var(--color-bg);
   min-height: 100vh;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 40px rgba(60, 40, 20, 0.15);
 }
 
-/* 커버 */
+/* ---------- 장식 구분선 (선 ─ ◆ ─ 선) ---------- */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0.9rem auto;
+  color: var(--gold);
+}
+.ornament::before,
+.ornament::after {
+  content: '';
+  width: 52px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor);
+}
+.ornament::after { background: linear-gradient(90deg, currentColor, transparent); }
+.ornament span {
+  width: 7px;
+  height: 7px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+/* ---------- 커버 ---------- */
 .cover {
-  min-height: 70vh;
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: 4rem 2.25rem;
   /* 원톤 종이 질감: SVG 노이즈를 베이지 톤으로 은은하게 겹침 */
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.69 0 0 0 0 0.54 0 0 0 0 0.41 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.7), transparent 70%),
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.75), transparent 70%),
     linear-gradient(180deg, var(--color-tint), var(--color-bg));
 }
-.cover__label { letter-spacing: 0.4em; font-size: 0.8rem; color: var(--color-accent); }
+/* 금색 이중 테두리 */
+.cover::before,
+.cover::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid rgba(184, 146, 90, 0.55);
+}
+.cover::before { inset: 14px; }
+.cover::after { inset: 20px; border-color: rgba(184, 146, 90, 0.28); }
+
+.cover__inner > * { animation: rise 1.1s ease var(--d, 0s) both; }
+
+.cover__label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
 .cover__title {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(1.8rem, 8vw, 2.4rem);
+  font-size: clamp(2rem, 9vw, 2.7rem);
   line-height: 1.35;
-  margin: 1.2rem 0;
+  margin: 1.2rem 0 1rem;
+  /* 금박 느낌의 반짝이는 글자 */
+  background: linear-gradient(110deg, #6f4f26 0%, #a8834c 35%, #dcbd82 50%, #a8834c 65%, #6f4f26 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: rise 1.1s ease var(--d, 0s) both, shimmer 7s ease-in-out 2s infinite;
 }
-.cover__date { color: var(--color-sub); }
+.cover__num {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.6rem;
+  font-variant-numeric: lining-nums;
+  letter-spacing: 0.22em;
+  margin-bottom: 0.6rem;
+}
+.cover__date { color: var(--color-sub); line-height: 1.8; }
+.cover__venue {
+  margin-top: 0.9rem;
+  font-family: var(--font-serif);
+  color: var(--gold-dark);
+}
+.cover__scroll {
+  position: absolute;
+  bottom: 2.6rem;
+  left: 50%;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  animation: bob 2s ease-in-out infinite;
+}
+.cover__scroll::after {
+  content: '';
+  display: block;
+  width: 9px;
+  height: 9px;
+  margin: 0.3rem auto 0;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+}
 
-/* 공통 섹션 */
-.section { padding: 3rem 1.5rem; text-align: center; }
+/* ---------- 공통 섹션 ---------- */
+.section { position: relative; padding: 4.5rem 1.5rem; text-align: center; }
 .section--tint { background: var(--color-tint); }
-/* 흑백 사진 배경 (글자가 읽히도록 밝은 막을 덮음) */
+.section__eyebrow {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+.section__title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.45rem;
+  margin-top: 0.1rem;
+}
+.section__title + .ornament { margin-bottom: 1.8rem; }
+.greeting { white-space: pre-line; }
+.info { margin-bottom: 1.2rem; }
+.info strong { font-family: var(--font-serif); font-size: 1.1rem; }
+
+/* ---------- 인사말: 흑백 사진 배경 ---------- */
 .section--photo {
-  position: relative;
   isolation: isolate;
-  padding: 5rem 1.5rem;
+  padding: 6.5rem 1.5rem;
 }
 .section--photo::before {
   content: '';
@@ -76,57 +185,72 @@ body {
     url('../images/beach-couple.jpg') center 65% / cover no-repeat;
   filter: grayscale(1);
 }
-.section__title {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 1.3rem;
-  color: var(--color-accent-dark);
-  margin-bottom: 1.5rem;
-}
-.greeting { white-space: pre-line; }
 /* 선명한 사진 위에서도 글자가 읽히도록 흰 그림자 */
+.section--photo .section__eyebrow,
 .section--photo .section__title,
 .section--photo .greeting {
   text-shadow: 0 0 6px rgba(255, 253, 249, 0.95), 0 0 14px rgba(255, 253, 249, 0.8);
 }
 .section--photo .greeting { font-weight: 500; }
-.info { margin-bottom: 1.2rem; }
 
-/* D-Day */
-.dday__summary {
-  font-family: var(--font-serif);
-  font-size: 2.6rem;
-  font-weight: 600;
-  color: var(--color-accent-dark);
-  margin-bottom: 1rem;
+/* ---------- D-Day: 어두운 배경 + 금색 ---------- */
+.section--dark {
+  color: var(--dark-text);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 0%, rgba(184, 146, 90, 0.22), transparent 65%),
+    var(--dark-bg);
 }
-.countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; }
+.section--dark .section__eyebrow,
+.section--dark .ornament { color: var(--gold-light); }
+.section--dark .section__title { color: #fff8ec; }
+
+.dday__summary {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 4rem;
+  font-variant-numeric: lining-nums;
+  line-height: 1.1;
+  margin-bottom: 1.6rem;
+  background: linear-gradient(135deg, #c9a465, #f3e2b5 50%, #c9a465);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.55rem; }
 .countdown__item {
-  background: #fff;
-  border-radius: var(--radius);
-  padding: 0.9rem 0.2rem;
   display: flex;
   flex-direction: column;
+  padding: 1rem 0.2rem 0.8rem;
+  border: 1px solid rgba(227, 200, 143, 0.4);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 18px rgba(227, 200, 143, 0.08);
 }
 .countdown__num {
-  font-family: var(--font-serif);
-  font-size: clamp(1.4rem, 7vw, 1.9rem);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.8rem, 8vw, 2.3rem);
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1.1;
+  color: #f6e7c4;
 }
-.countdown__unit { font-size: 0.8rem; color: var(--color-sub); }
-.dday__message { margin-top: 1rem; color: var(--color-sub); min-height: 1.7em; }
+.countdown__unit { margin-top: 0.2rem; font-size: 0.75rem; color: rgba(239, 230, 218, 0.65); }
+.dday__message { margin-top: 1.2rem; min-height: 1.7em; color: rgba(239, 230, 218, 0.75); }
 
-/* 지도 */
+/* ---------- 지도 ---------- */
 .map {
-  margin: 1.5rem 0 1rem;
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--color-tint);
+  margin: 1.8rem 0 1.2rem;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid rgba(184, 146, 90, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(90, 60, 30, 0.12);
 }
-.map__frame { display: block; width: 100%; height: 300px; border: 0; }
+.map__frame { display: block; width: 100%; height: 300px; border: 0; border-radius: 11px; }
 
-/* 버튼 */
+/* ---------- 버튼 ---------- */
 .actions { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
 .btn {
   display: inline-flex;
@@ -134,26 +258,96 @@ body {
   justify-content: center;
   min-height: 44px;
   min-width: 44px;
-  padding: 0 1.1rem;
-  border: 1px solid var(--color-accent);
+  padding: 0 1.2rem;
+  border: 1px solid transparent;
   border-radius: 999px;
-  background: var(--color-accent);
+  background: linear-gradient(135deg, #6f4f26, #93703f 50%, #6f4f26);
+  background-size: 200% 100%;
+  box-shadow: 0 4px 14px rgba(111, 79, 38, 0.3);
   color: #fff;
   font: inherit;
   font-size: 0.95rem;
   text-decoration: none;
   cursor: pointer;
+  transition: background-position 0.4s, transform 0.15s;
 }
-.btn:active { background: var(--color-accent-dark); }
-.btn--ghost { background: transparent; color: var(--color-accent-dark); }
+.btn:hover { background-position: 100% 0; }
+.btn:active { transform: scale(0.97); }
+.btn--ghost {
+  background: transparent;
+  border-color: var(--gold);
+  box-shadow: none;
+  color: var(--gold-dark);
+}
 .btn--ghost:active { background: var(--color-tint); }
 
-.toast { min-height: 1.7em; margin-top: 0.8rem; font-size: 0.9rem; color: var(--color-accent-dark); }
+.toast { min-height: 1.7em; margin-top: 0.8rem; font-size: 0.9rem; color: var(--gold-dark); }
 
-.footer { padding: 2rem 1.5rem 3rem; text-align: center; color: var(--color-sub); font-size: 0.9rem; }
+/* ---------- 푸터 ---------- */
+.footer { padding: 3rem 1.5rem 4rem; text-align: center; color: var(--color-sub); font-size: 0.9rem; }
+.footer__sign {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.7rem;
+  color: var(--gold);
+}
 
-/* 태블릿 이상 */
+/* ---------- 흩날리는 꽃잎 ---------- */
+.petals {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+}
+.petal {
+  position: absolute;
+  top: -24px;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 150% 0 150% 0;
+  background: linear-gradient(135deg, #fbe6de, #e9b9a7);
+  opacity: 0.75;
+  animation: fall var(--dur) linear var(--delay) infinite;
+}
+
+/* ---------- 스크롤 등장 효과 ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* ---------- 애니메이션 ---------- */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes shimmer {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0 0; }
+}
+@keyframes bob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 8px); }
+}
+@keyframes fall {
+  to { transform: translate(var(--drift), 110vh) rotate(540deg); }
+}
+
+/* 움직임 줄이기 설정을 켠 사용자에게는 애니메이션 끔 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .reveal { opacity: 1; transform: none; }
+  .cover__scroll { transform: translateX(-50%); }
+}
+
+/* ---------- 태블릿 이상 ---------- */
 @media (min-width: 768px) {
   .page { margin: 2rem auto; border-radius: 16px; overflow: hidden; min-height: auto; }
-  .cover { min-height: 60vh; }
+  .cover { min-height: 760px; }
 }
